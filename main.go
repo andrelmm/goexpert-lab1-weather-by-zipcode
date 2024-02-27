@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -30,31 +31,46 @@ const viaCepAPI = "https://viacep.com.br/ws/%s/json/"
 const weatherAPI = "https://api.weatherapi.com/v1/current.json?key=2abdcba66a8b4196b4402638242702&q=%s"
 
 func getLocation(zip string) (*ViaCepResponse, error) {
+	log.Printf("Getting location for ZIP code: %s", zip)
+
 	resp, err := http.Get(fmt.Sprintf(viaCepAPI, zip))
 	if err != nil {
+		log.Printf("Error occurred while making HTTP request: %v", err)
 		return nil, err
 	}
 	defer resp.Body.Close()
 
+	log.Println("HTTP request successful")
+
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
+		log.Printf("Error occurred while reading response body: %v", err)
 		return nil, err
 	}
 
+	log.Println("Response body read successfully")
+
 	var viaCepResponse ViaCepResponse
 	if err := json.Unmarshal(body, &viaCepResponse); err != nil {
+		log.Printf("Error occurred while unmarshalling JSON: %v", err)
 		return nil, err
 	}
+
+	log.Println("JSON unmarshalled successfully")
 
 	if viaCepResponse.Location == "" {
 		var errorResp map[string]string
 		if err := json.Unmarshal(body, &errorResp); err != nil {
+			log.Printf("Error occurred while unmarshalling error response JSON: %v", err)
 			return nil, err
 		}
 		if val, ok := errorResp["erro"]; ok && val == "true" {
+			log.Println("CEP not found")
 			return nil, errors.New("CEP not found")
 		}
 	}
+
+	log.Println("Location retrieved successfully")
 
 	return &viaCepResponse, nil
 }
@@ -117,6 +133,8 @@ func HandleRequest(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 	http.HandleFunc("/weather", HandleRequest)
 
 	log.Fatal(http.ListenAndServe(":8080", nil))

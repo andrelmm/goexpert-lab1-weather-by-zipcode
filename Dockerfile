@@ -1,5 +1,5 @@
 FROM golang:1.21 as builder
-WORKDIR app
+WORKDIR /app
 COPY . .
 RUN CGO_ENABLED=0 GOOS=linux GO_ARCH=amd64 go build -o cloudrun
 
