@@ -27,6 +27,18 @@ Where:
 - temp_F is the temperature in Fahrenheit.
 - temp_K is the temperature in Kelvin.
 
+### Running the Application Locally using Docker
+
+To run the application locally using Docker, execute the following commands:
+
+```shell
+
+docker-compose build
+
+docker-compose up -d
+
+```
+
 ### Accessing the Published Version
 You can access the published version of this application using the following URL:
 
