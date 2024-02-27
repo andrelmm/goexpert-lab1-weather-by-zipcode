@@ -27,8 +27,8 @@ type WeatherAPIResponse struct {
 	} `json:"current"`
 }
 
-const viaCepAPI = "https://viacep.com.br/ws/%s/json/"
-const weatherAPI = "https://api.weatherapi.com/v1/current.json?key=2abdcba66a8b4196b4402638242702&q=%s"
+var viaCepAPI = "https://viacep.com.br/ws/%s/json/"
+var weatherAPI = "https://api.weatherapi.com/v1/current.json?key=2abdcba66a8b4196b4402638242702&q=%s"
 
 func getLocation(zip string) (*ViaCepResponse, error) {
 	log.Printf("Getting location for ZIP code: %s", zip)
