@@ -32,12 +32,14 @@ Where:
 To run the application locally using Docker, execute the following commands:
 
 ```shell
-
 docker-compose build
-
 docker-compose up -d
-
 ```
+To access the application, make a GET request to the following endpoint:
+
+```http request
+http://localhost:8080/weather?zip={zip_code}
+``` 
 
 ### Accessing the Published Version
 You can access the published version of this application using the following URL:
